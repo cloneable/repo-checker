@@ -21,6 +21,7 @@ query OwnerRepos(
   	}
   	edges {
   	  cursor
+	  # @genqlient(typename: OwnedRepo)
   	  node {
   		id
   		nameWithOwner

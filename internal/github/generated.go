@@ -10,6 +10,353 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+// OwnedRepo includes the requested fields of the GraphQL type Repository.
+// The GraphQL type's documentation follows.
+//
+// A repository contains the content for a project.
+type OwnedRepo struct {
+	Id string `json:"id"`
+	// The repository's name with owner.
+	NameWithOwner string `json:"nameWithOwner"`
+	// The description of the repository.
+	Description string `json:"description"`
+	// A list of branch protection rules for this repository.
+	BranchProtectionRules OwnedRepoBranchProtectionRulesBranchProtectionRuleConnection `json:"branchProtectionRules"`
+	// Whether or not Auto-merge can be enabled on pull requests in this repository.
+	AutoMergeAllowed bool `json:"autoMergeAllowed"`
+	// The Ref associated with the repository's default branch.
+	DefaultBranchRef OwnedRepoDefaultBranchRef `json:"defaultBranchRef"`
+	// Indicates if the repository is unmaintained.
+	IsArchived bool `json:"isArchived"`
+	// Indicates if the repository has been locked or not.
+	IsLocked bool `json:"isLocked"`
+	// Indicates the repository's visibility level.
+	Visibility RepositoryVisibility `json:"visibility"`
+	// Whether or not branches are automatically deleted when merged in this repository.
+	DeleteBranchOnMerge bool `json:"deleteBranchOnMerge"`
+	// Whether this repository allows forks.
+	ForkingAllowed bool `json:"forkingAllowed"`
+	// A list of direct forked repositories.
+	Forks OwnedRepoForksRepositoryConnection `json:"forks"`
+	// Indicates if the repository has issues feature enabled.
+	HasIssuesEnabled bool `json:"hasIssuesEnabled"`
+	// Indicates if the repository has wiki feature enabled.
+	HasWikiEnabled bool `json:"hasWikiEnabled"`
+	// Indicates if the repository has the Projects feature enabled.
+	HasProjectsEnabled bool `json:"hasProjectsEnabled"`
+	// Identifies if the repository is private or internal.
+	IsPrivate bool `json:"isPrivate"`
+	// Identifies if the repository is a template that can be used to generate new repositories.
+	IsTemplate bool `json:"isTemplate"`
+	// Returns true if this repository has a security policy
+	IsSecurityPolicyEnabled bool `json:"isSecurityPolicyEnabled"`
+	// A list of labels associated with the repository.
+	Labels OwnedRepoLabelsLabelConnection `json:"labels"`
+}
+
+// OwnedRepoBranchProtectionRulesBranchProtectionRuleConnection includes the requested fields of the GraphQL type BranchProtectionRuleConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for BranchProtectionRule.
+type OwnedRepoBranchProtectionRulesBranchProtectionRuleConnection struct {
+	// A list of nodes.
+	Nodes []OwnedRepoBranchProtectionRulesBranchProtectionRuleConnectionNodesBranchProtectionRule `json:"nodes"`
+}
+
+// OwnedRepoBranchProtectionRulesBranchProtectionRuleConnectionNodesBranchProtectionRule includes the requested fields of the GraphQL type BranchProtectionRule.
+// The GraphQL type's documentation follows.
+//
+// A branch protection rule.
+type OwnedRepoBranchProtectionRulesBranchProtectionRuleConnectionNodesBranchProtectionRule struct {
+	Id string `json:"id"`
+	// Identifies the protection rule pattern.
+	Pattern string `json:"pattern"`
+	// Can this branch be deleted.
+	AllowsDeletions bool `json:"allowsDeletions"`
+	// Are force pushes allowed on this branch.
+	AllowsForcePushes bool `json:"allowsForcePushes"`
+	// Can admins overwrite branch protection.
+	IsAdminEnforced bool `json:"isAdminEnforced"`
+	// Number of approving reviews required to update matching branches.
+	RequiredApprovingReviewCount int `json:"requiredApprovingReviewCount"`
+	// Are approving reviews required to update matching branches.
+	RequiresApprovingReviews bool `json:"requiresApprovingReviews"`
+	// Are merge commits prohibited from being pushed to this branch.
+	RequiresLinearHistory bool `json:"requiresLinearHistory"`
+	// Are status checks required to update matching branches.
+	RequiresStatusChecks bool `json:"requiresStatusChecks"`
+	// Is pushing to matching branches restricted.
+	RestrictsPushes bool `json:"restrictsPushes"`
+}
+
+// OwnedRepoDefaultBranchRef includes the requested fields of the GraphQL type Ref.
+// The GraphQL type's documentation follows.
+//
+// Represents a Git reference.
+type OwnedRepoDefaultBranchRef struct {
+	// The ref name.
+	Name string `json:"name"`
+}
+
+// OwnedRepoForksRepositoryConnection includes the requested fields of the GraphQL type RepositoryConnection.
+// The GraphQL type's documentation follows.
+//
+// A list of repositories owned by the subject.
+type OwnedRepoForksRepositoryConnection struct {
+	// A list of nodes.
+	Nodes []OwnedRepoForksRepositoryConnectionNodesRepository `json:"nodes"`
+}
+
+// OwnedRepoForksRepositoryConnectionNodesRepository includes the requested fields of the GraphQL type Repository.
+// The GraphQL type's documentation follows.
+//
+// A repository contains the content for a project.
+type OwnedRepoForksRepositoryConnectionNodesRepository struct {
+	Id string `json:"id"`
+	// The User owner of the repository.
+	Owner OwnedRepoForksRepositoryConnectionNodesRepositoryOwner `json:"-"`
+	// The name of the repository.
+	Name string `json:"name"`
+}
+
+func (v *OwnedRepoForksRepositoryConnectionNodesRepository) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*OwnedRepoForksRepositoryConnectionNodesRepository
+		Owner json.RawMessage `json:"owner"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.OwnedRepoForksRepositoryConnectionNodesRepository = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Owner
+		src := firstPass.Owner
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalOwnedRepoForksRepositoryConnectionNodesRepositoryOwner(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"Unable to unmarshal OwnedRepoForksRepositoryConnectionNodesRepository.Owner: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalOwnedRepoForksRepositoryConnectionNodesRepository struct {
+	Id string `json:"id"`
+
+	Owner json.RawMessage `json:"owner"`
+
+	Name string `json:"name"`
+}
+
+func (v *OwnedRepoForksRepositoryConnectionNodesRepository) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *OwnedRepoForksRepositoryConnectionNodesRepository) __premarshalJSON() (*__premarshalOwnedRepoForksRepositoryConnectionNodesRepository, error) {
+	var retval __premarshalOwnedRepoForksRepositoryConnectionNodesRepository
+
+	retval.Id = v.Id
+	{
+
+		dst := &retval.Owner
+		src := v.Owner
+		var err error
+		*dst, err = __marshalOwnedRepoForksRepositoryConnectionNodesRepositoryOwner(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"Unable to marshal OwnedRepoForksRepositoryConnectionNodesRepository.Owner: %w", err)
+		}
+	}
+	retval.Name = v.Name
+	return &retval, nil
+}
+
+// OwnedRepoForksRepositoryConnectionNodesRepositoryOwner includes the requested fields of the GraphQL interface RepositoryOwner.
+//
+// OwnedRepoForksRepositoryConnectionNodesRepositoryOwner is implemented by the following types:
+// OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization
+// OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser
+// The GraphQL type's documentation follows.
+//
+// Represents an owner of a Repository.
+type OwnedRepoForksRepositoryConnectionNodesRepositoryOwner interface {
+	implementsGraphQLInterfaceOwnedRepoForksRepositoryConnectionNodesRepositoryOwner()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+	// GetLogin returns the interface-field "login" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The username used to login.
+	GetLogin() string
+}
+
+func (v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization) implementsGraphQLInterfaceOwnedRepoForksRepositoryConnectionNodesRepositoryOwner() {
+}
+
+// GetTypename is a part of, and documented with, the interface OwnedRepoForksRepositoryConnectionNodesRepositoryOwner.
+func (v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization) GetTypename() string {
+	return v.Typename
+}
+
+// GetLogin is a part of, and documented with, the interface OwnedRepoForksRepositoryConnectionNodesRepositoryOwner.
+func (v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization) GetLogin() string {
+	return v.Login
+}
+
+func (v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser) implementsGraphQLInterfaceOwnedRepoForksRepositoryConnectionNodesRepositoryOwner() {
+}
+
+// GetTypename is a part of, and documented with, the interface OwnedRepoForksRepositoryConnectionNodesRepositoryOwner.
+func (v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser) GetTypename() string {
+	return v.Typename
+}
+
+// GetLogin is a part of, and documented with, the interface OwnedRepoForksRepositoryConnectionNodesRepositoryOwner.
+func (v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser) GetLogin() string {
+	return v.Login
+}
+
+func __unmarshalOwnedRepoForksRepositoryConnectionNodesRepositoryOwner(b []byte, v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwner) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Organization":
+		*v = new(OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization)
+		return json.Unmarshal(b, *v)
+	case "User":
+		*v = new(OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"Response was missing RepositoryOwner.__typename")
+	default:
+		return fmt.Errorf(
+			`Unexpected concrete type for OwnedRepoForksRepositoryConnectionNodesRepositoryOwner: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalOwnedRepoForksRepositoryConnectionNodesRepositoryOwner(v *OwnedRepoForksRepositoryConnectionNodesRepositoryOwner) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization:
+		typename = "Organization"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization
+		}{typename, v}
+		return json.Marshal(result)
+	case *OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser:
+		typename = "User"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`Unexpected concrete type for OwnedRepoForksRepositoryConnectionNodesRepositoryOwner: "%T"`, v)
+	}
+}
+
+// OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization includes the requested fields of the GraphQL type Organization.
+// The GraphQL type's documentation follows.
+//
+// An account on GitHub, with one or more owners, that has repositories, members and teams.
+type OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerOrganization struct {
+	Typename string `json:"__typename"`
+	// The username used to login.
+	Login string `json:"login"`
+}
+
+// OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// A user is an individual's account on GitHub that owns repositories and can make new content.
+type OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser struct {
+	Typename string `json:"__typename"`
+	// The username used to login.
+	Login string `json:"login"`
+}
+
+// OwnedRepoLabelsLabelConnection includes the requested fields of the GraphQL type LabelConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for Label.
+type OwnedRepoLabelsLabelConnection struct {
+	// A list of nodes.
+	Nodes []OwnedRepoLabelsLabelConnectionNodesLabel `json:"nodes"`
+}
+
+// OwnedRepoLabelsLabelConnectionNodesLabel includes the requested fields of the GraphQL type Label.
+// The GraphQL type's documentation follows.
+//
+// A label for categorizing Issues, Pull Requests, Milestones, or Discussions with a given Repository.
+type OwnedRepoLabelsLabelConnectionNodesLabel struct {
+	Id string `json:"id"`
+	// Identifies the label name.
+	Name string `json:"name"`
+	// A brief description of this label.
+	Description string `json:"description"`
+	// Identifies the label color.
+	Color string `json:"color"`
+	// Indicates whether or not this is a default label.
+	IsDefault bool `json:"isDefault"`
+	// A list of pull requests associated with this label.
+	PullRequests OwnedRepoLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection `json:"pullRequests"`
+	// A list of issues associated with this label.
+	Issues OwnedRepoLabelsLabelConnectionNodesLabelIssuesIssueConnection `json:"issues"`
+}
+
+// OwnedRepoLabelsLabelConnectionNodesLabelIssuesIssueConnection includes the requested fields of the GraphQL type IssueConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for Issue.
+type OwnedRepoLabelsLabelConnectionNodesLabelIssuesIssueConnection struct {
+	// Identifies the total count of items in the connection.
+	TotalCount int `json:"totalCount"`
+}
+
+// OwnedRepoLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection includes the requested fields of the GraphQL type PullRequestConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for PullRequest.
+type OwnedRepoLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection struct {
+	// Identifies the total count of items in the connection.
+	TotalCount int `json:"totalCount"`
+}
+
 // OwnerReposRepositoryOwner includes the requested fields of the GraphQL interface RepositoryOwner.
 //
 // OwnerReposRepositoryOwner is implemented by the following types:
@@ -136,354 +483,7 @@ type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdg
 	// A cursor for use in pagination.
 	Cursor string `json:"cursor"`
 	// The item at the end of the edge.
-	Node OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepository `json:"node"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepository includes the requested fields of the GraphQL type Repository.
-// The GraphQL type's documentation follows.
-//
-// A repository contains the content for a project.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepository struct {
-	Id string `json:"id"`
-	// The repository's name with owner.
-	NameWithOwner string `json:"nameWithOwner"`
-	// The description of the repository.
-	Description string `json:"description"`
-	// A list of branch protection rules for this repository.
-	BranchProtectionRules OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryBranchProtectionRulesBranchProtectionRuleConnection `json:"branchProtectionRules"`
-	// Whether or not Auto-merge can be enabled on pull requests in this repository.
-	AutoMergeAllowed bool `json:"autoMergeAllowed"`
-	// The Ref associated with the repository's default branch.
-	DefaultBranchRef OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryDefaultBranchRef `json:"defaultBranchRef"`
-	// Indicates if the repository is unmaintained.
-	IsArchived bool `json:"isArchived"`
-	// Indicates if the repository has been locked or not.
-	IsLocked bool `json:"isLocked"`
-	// Indicates the repository's visibility level.
-	Visibility RepositoryVisibility `json:"visibility"`
-	// Whether or not branches are automatically deleted when merged in this repository.
-	DeleteBranchOnMerge bool `json:"deleteBranchOnMerge"`
-	// Whether this repository allows forks.
-	ForkingAllowed bool `json:"forkingAllowed"`
-	// A list of direct forked repositories.
-	Forks OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnection `json:"forks"`
-	// Indicates if the repository has issues feature enabled.
-	HasIssuesEnabled bool `json:"hasIssuesEnabled"`
-	// Indicates if the repository has wiki feature enabled.
-	HasWikiEnabled bool `json:"hasWikiEnabled"`
-	// Indicates if the repository has the Projects feature enabled.
-	HasProjectsEnabled bool `json:"hasProjectsEnabled"`
-	// Identifies if the repository is private or internal.
-	IsPrivate bool `json:"isPrivate"`
-	// Identifies if the repository is a template that can be used to generate new repositories.
-	IsTemplate bool `json:"isTemplate"`
-	// Returns true if this repository has a security policy
-	IsSecurityPolicyEnabled bool `json:"isSecurityPolicyEnabled"`
-	// A list of labels associated with the repository.
-	Labels OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnection `json:"labels"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryBranchProtectionRulesBranchProtectionRuleConnection includes the requested fields of the GraphQL type BranchProtectionRuleConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for BranchProtectionRule.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryBranchProtectionRulesBranchProtectionRuleConnection struct {
-	// A list of nodes.
-	Nodes []OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryBranchProtectionRulesBranchProtectionRuleConnectionNodesBranchProtectionRule `json:"nodes"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryBranchProtectionRulesBranchProtectionRuleConnectionNodesBranchProtectionRule includes the requested fields of the GraphQL type BranchProtectionRule.
-// The GraphQL type's documentation follows.
-//
-// A branch protection rule.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryBranchProtectionRulesBranchProtectionRuleConnectionNodesBranchProtectionRule struct {
-	Id string `json:"id"`
-	// Identifies the protection rule pattern.
-	Pattern string `json:"pattern"`
-	// Can this branch be deleted.
-	AllowsDeletions bool `json:"allowsDeletions"`
-	// Are force pushes allowed on this branch.
-	AllowsForcePushes bool `json:"allowsForcePushes"`
-	// Can admins overwrite branch protection.
-	IsAdminEnforced bool `json:"isAdminEnforced"`
-	// Number of approving reviews required to update matching branches.
-	RequiredApprovingReviewCount int `json:"requiredApprovingReviewCount"`
-	// Are approving reviews required to update matching branches.
-	RequiresApprovingReviews bool `json:"requiresApprovingReviews"`
-	// Are merge commits prohibited from being pushed to this branch.
-	RequiresLinearHistory bool `json:"requiresLinearHistory"`
-	// Are status checks required to update matching branches.
-	RequiresStatusChecks bool `json:"requiresStatusChecks"`
-	// Is pushing to matching branches restricted.
-	RestrictsPushes bool `json:"restrictsPushes"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryDefaultBranchRef includes the requested fields of the GraphQL type Ref.
-// The GraphQL type's documentation follows.
-//
-// Represents a Git reference.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryDefaultBranchRef struct {
-	// The ref name.
-	Name string `json:"name"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnection includes the requested fields of the GraphQL type RepositoryConnection.
-// The GraphQL type's documentation follows.
-//
-// A list of repositories owned by the subject.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnection struct {
-	// A list of nodes.
-	Nodes []OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository `json:"nodes"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository includes the requested fields of the GraphQL type Repository.
-// The GraphQL type's documentation follows.
-//
-// A repository contains the content for a project.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository struct {
-	Id string `json:"id"`
-	// The User owner of the repository.
-	Owner OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner `json:"-"`
-	// The name of the repository.
-	Name string `json:"name"`
-}
-
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository
-		Owner json.RawMessage `json:"owner"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.Owner
-		src := firstPass.Owner
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"Unable to unmarshal OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository.Owner: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository struct {
-	Id string `json:"id"`
-
-	Owner json.RawMessage `json:"owner"`
-
-	Name string `json:"name"`
-}
-
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository) __premarshalJSON() (*__premarshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository, error) {
-	var retval __premarshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository
-
-	retval.Id = v.Id
-	{
-
-		dst := &retval.Owner
-		src := v.Owner
-		var err error
-		*dst, err = __marshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"Unable to marshal OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepository.Owner: %w", err)
-		}
-	}
-	retval.Name = v.Name
-	return &retval, nil
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner includes the requested fields of the GraphQL interface RepositoryOwner.
-//
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner is implemented by the following types:
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser
-// The GraphQL type's documentation follows.
-//
-// Represents an owner of a Repository.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner interface {
-	implementsGraphQLInterfaceOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() string
-	// GetLogin returns the interface-field "login" from its implementation.
-	// The GraphQL interface field's documentation follows.
-	//
-	// The username used to login.
-	GetLogin() string
-}
-
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization) implementsGraphQLInterfaceOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner() {
-}
-
-// GetTypename is a part of, and documented with, the interface OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner.
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization) GetTypename() string {
-	return v.Typename
-}
-
-// GetLogin is a part of, and documented with, the interface OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner.
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization) GetLogin() string {
-	return v.Login
-}
-
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser) implementsGraphQLInterfaceOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner() {
-}
-
-// GetTypename is a part of, and documented with, the interface OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner.
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser) GetTypename() string {
-	return v.Typename
-}
-
-// GetLogin is a part of, and documented with, the interface OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner.
-func (v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser) GetLogin() string {
-	return v.Login
-}
-
-func __unmarshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner(b []byte, v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "Organization":
-		*v = new(OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization)
-		return json.Unmarshal(b, *v)
-	case "User":
-		*v = new(OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"Response was missing RepositoryOwner.__typename")
-	default:
-		return fmt.Errorf(
-			`Unexpected concrete type for OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalOwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner(v *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization:
-		typename = "Organization"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization
-		}{typename, v}
-		return json.Marshal(result)
-	case *OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser:
-		typename = "User"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser
-		}{typename, v}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`Unexpected concrete type for OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwner: "%T"`, v)
-	}
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization includes the requested fields of the GraphQL type Organization.
-// The GraphQL type's documentation follows.
-//
-// An account on GitHub, with one or more owners, that has repositories, members and teams.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerOrganization struct {
-	Typename string `json:"__typename"`
-	// The username used to login.
-	Login string `json:"login"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser includes the requested fields of the GraphQL type User.
-// The GraphQL type's documentation follows.
-//
-// A user is an individual's account on GitHub that owns repositories and can make new content.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryForksRepositoryConnectionNodesRepositoryOwnerUser struct {
-	Typename string `json:"__typename"`
-	// The username used to login.
-	Login string `json:"login"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnection includes the requested fields of the GraphQL type LabelConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for Label.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnection struct {
-	// A list of nodes.
-	Nodes []OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabel `json:"nodes"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabel includes the requested fields of the GraphQL type Label.
-// The GraphQL type's documentation follows.
-//
-// A label for categorizing Issues, Pull Requests, Milestones, or Discussions with a given Repository.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabel struct {
-	Id string `json:"id"`
-	// Identifies the label name.
-	Name string `json:"name"`
-	// A brief description of this label.
-	Description string `json:"description"`
-	// Identifies the label color.
-	Color string `json:"color"`
-	// Indicates whether or not this is a default label.
-	IsDefault bool `json:"isDefault"`
-	// A list of pull requests associated with this label.
-	PullRequests OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection `json:"pullRequests"`
-	// A list of issues associated with this label.
-	Issues OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabelIssuesIssueConnection `json:"issues"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabelIssuesIssueConnection includes the requested fields of the GraphQL type IssueConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for Issue.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabelIssuesIssueConnection struct {
-	// Identifies the total count of items in the connection.
-	TotalCount int `json:"totalCount"`
-}
-
-// OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection includes the requested fields of the GraphQL type PullRequestConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for PullRequest.
-type OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionEdgesRepositoryEdgeNodeRepositoryLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection struct {
-	// Identifies the total count of items in the connection.
-	TotalCount int `json:"totalCount"`
+	Node OwnedRepo `json:"node"`
 }
 
 // OwnerReposRepositoryOwnerRepositoriesRepositoryConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
