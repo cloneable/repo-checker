@@ -16,8 +16,8 @@ import (
 // A repository contains the content for a project.
 type OwnedRepo struct {
 	Id string `json:"id"`
-	// The repository's name with owner.
-	NameWithOwner string `json:"nameWithOwner"`
+	// The name of the repository.
+	Name string `json:"name"`
 	// The description of the repository.
 	Description string `json:"description"`
 	// A list of branch protection rules for this repository.
@@ -50,8 +50,6 @@ type OwnedRepo struct {
 	IsTemplate bool `json:"isTemplate"`
 	// Returns true if this repository has a security policy
 	IsSecurityPolicyEnabled bool `json:"isSecurityPolicyEnabled"`
-	// A list of labels associated with the repository.
-	Labels OwnedRepoLabelsLabelConnection `json:"labels"`
 }
 
 // OwnedRepoBranchProtectionRulesBranchProtectionRuleConnection includes the requested fields of the GraphQL type BranchProtectionRuleConnection.
@@ -310,53 +308,6 @@ type OwnedRepoForksRepositoryConnectionNodesRepositoryOwnerUser struct {
 	Login string `json:"login"`
 }
 
-// OwnedRepoLabelsLabelConnection includes the requested fields of the GraphQL type LabelConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for Label.
-type OwnedRepoLabelsLabelConnection struct {
-	// A list of nodes.
-	Nodes []OwnedRepoLabelsLabelConnectionNodesLabel `json:"nodes"`
-}
-
-// OwnedRepoLabelsLabelConnectionNodesLabel includes the requested fields of the GraphQL type Label.
-// The GraphQL type's documentation follows.
-//
-// A label for categorizing Issues, Pull Requests, Milestones, or Discussions with a given Repository.
-type OwnedRepoLabelsLabelConnectionNodesLabel struct {
-	Id string `json:"id"`
-	// Identifies the label name.
-	Name string `json:"name"`
-	// A brief description of this label.
-	Description string `json:"description"`
-	// Identifies the label color.
-	Color string `json:"color"`
-	// Indicates whether or not this is a default label.
-	IsDefault bool `json:"isDefault"`
-	// A list of pull requests associated with this label.
-	PullRequests OwnedRepoLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection `json:"pullRequests"`
-	// A list of issues associated with this label.
-	Issues OwnedRepoLabelsLabelConnectionNodesLabelIssuesIssueConnection `json:"issues"`
-}
-
-// OwnedRepoLabelsLabelConnectionNodesLabelIssuesIssueConnection includes the requested fields of the GraphQL type IssueConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for Issue.
-type OwnedRepoLabelsLabelConnectionNodesLabelIssuesIssueConnection struct {
-	// Identifies the total count of items in the connection.
-	TotalCount int `json:"totalCount"`
-}
-
-// OwnedRepoLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection includes the requested fields of the GraphQL type PullRequestConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for PullRequest.
-type OwnedRepoLabelsLabelConnectionNodesLabelPullRequestsPullRequestConnection struct {
-	// Identifies the total count of items in the connection.
-	TotalCount int `json:"totalCount"`
-}
-
 // OwnerReposRepositoryOwner includes the requested fields of the GraphQL interface RepositoryOwner.
 //
 // OwnerReposRepositoryOwner is implemented by the following types:
@@ -576,6 +527,92 @@ func (v *OwnerReposResponse) __premarshalJSON() (*__premarshalOwnerReposResponse
 	return &retval, nil
 }
 
+// RepoLabel includes the requested fields of the GraphQL type Label.
+// The GraphQL type's documentation follows.
+//
+// A label for categorizing Issues, Pull Requests, Milestones, or Discussions with a given Repository.
+type RepoLabel struct {
+	Id string `json:"id"`
+	// Identifies the label name.
+	Name string `json:"name"`
+	// A brief description of this label.
+	Description string `json:"description"`
+	// Identifies the label color.
+	Color string `json:"color"`
+	// Indicates whether or not this is a default label.
+	IsDefault bool `json:"isDefault"`
+	// A list of pull requests associated with this label.
+	PullRequests RepoLabelPullRequestsPullRequestConnection `json:"pullRequests"`
+	// A list of issues associated with this label.
+	Issues RepoLabelIssuesIssueConnection `json:"issues"`
+}
+
+// RepoLabelIssuesIssueConnection includes the requested fields of the GraphQL type IssueConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for Issue.
+type RepoLabelIssuesIssueConnection struct {
+	// Identifies the total count of items in the connection.
+	TotalCount int `json:"totalCount"`
+}
+
+// RepoLabelPullRequestsPullRequestConnection includes the requested fields of the GraphQL type PullRequestConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for PullRequest.
+type RepoLabelPullRequestsPullRequestConnection struct {
+	// Identifies the total count of items in the connection.
+	TotalCount int `json:"totalCount"`
+}
+
+// RepoLabelsRepository includes the requested fields of the GraphQL type Repository.
+// The GraphQL type's documentation follows.
+//
+// A repository contains the content for a project.
+type RepoLabelsRepository struct {
+	// A list of labels associated with the repository.
+	Labels RepoLabelsRepositoryLabelsLabelConnection `json:"labels"`
+}
+
+// RepoLabelsRepositoryLabelsLabelConnection includes the requested fields of the GraphQL type LabelConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for Label.
+type RepoLabelsRepositoryLabelsLabelConnection struct {
+	// Information to aid in pagination.
+	PageInfo RepoLabelsRepositoryLabelsLabelConnectionPageInfo `json:"pageInfo"`
+	// A list of edges.
+	Edges []RepoLabelsRepositoryLabelsLabelConnectionEdgesLabelEdge `json:"edges"`
+}
+
+// RepoLabelsRepositoryLabelsLabelConnectionEdgesLabelEdge includes the requested fields of the GraphQL type LabelEdge.
+// The GraphQL type's documentation follows.
+//
+// An edge in a connection.
+type RepoLabelsRepositoryLabelsLabelConnectionEdgesLabelEdge struct {
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+	// The item at the end of the edge.
+	Node RepoLabel `json:"node"`
+}
+
+// RepoLabelsRepositoryLabelsLabelConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Information about pagination in a connection.
+type RepoLabelsRepositoryLabelsLabelConnectionPageInfo struct {
+	// When paginating forwards, the cursor to continue.
+	EndCursor string `json:"endCursor"`
+	// When paginating forwards, are there more items?
+	HasNextPage bool `json:"hasNextPage"`
+}
+
+// RepoLabelsResponse is returned by RepoLabels on success.
+type RepoLabelsResponse struct {
+	// Lookup a given repository by the owner and repository name.
+	Repository RepoLabelsRepository `json:"repository"`
+}
+
 // The repository's visibility level.
 type RepositoryVisibility string
 
@@ -593,6 +630,14 @@ type __OwnerReposInput struct {
 	Login      string `json:"login"`
 	RepoCount  int    `json:"repoCount"`
 	RepoCursor string `json:"repoCursor,omitempty"`
+}
+
+// __RepoLabelsInput is used internally by genqlient
+type __RepoLabelsInput struct {
+	RepoOwner   string `json:"repoOwner"`
+	RepoName    string `json:"repoName"`
+	LabelCount  int    `json:"labelCount"`
+	LabelCursor string `json:"labelCursor,omitempty"`
 }
 
 func OwnerRepos(
@@ -626,7 +671,7 @@ query OwnerRepos ($login: String!, $repoCount: Int!, $repoCursor: String) {
 				cursor
 				node {
 					id
-					nameWithOwner
+					name
 					description
 					branchProtectionRules(first: 10) {
 						nodes {
@@ -667,20 +712,59 @@ query OwnerRepos ($login: String!, $repoCount: Int!, $repoCursor: String) {
 					isPrivate
 					isTemplate
 					isSecurityPolicyEnabled
-					labels(first: 20) {
-						nodes {
-							id
-							name
-							description
-							color
-							isDefault
-							pullRequests {
-								totalCount
-							}
-							issues {
-								totalCount
-							}
-						}
+				}
+			}
+		}
+	}
+}
+`,
+		&retval,
+		&__input,
+	)
+	return &retval, err
+}
+
+func RepoLabels(
+	ctx context.Context,
+	client graphql.Client,
+	repoOwner string,
+	repoName string,
+	labelCount int,
+	labelCursor string,
+) (*RepoLabelsResponse, error) {
+	__input := __RepoLabelsInput{
+		RepoOwner:   repoOwner,
+		RepoName:    repoName,
+		LabelCount:  labelCount,
+		LabelCursor: labelCursor,
+	}
+	var err error
+
+	var retval RepoLabelsResponse
+	err = client.MakeRequest(
+		ctx,
+		"RepoLabels",
+		`
+query RepoLabels ($repoOwner: String!, $repoName: String!, $labelCount: Int!, $labelCursor: String) {
+	repository(owner: $repoOwner, name: $repoName) {
+		labels(first: $labelCount, after: $labelCursor) {
+			pageInfo {
+				endCursor
+				hasNextPage
+			}
+			edges {
+				cursor
+				node {
+					id
+					name
+					description
+					color
+					isDefault
+					pullRequests {
+						totalCount
+					}
+					issues {
+						totalCount
 					}
 				}
 			}

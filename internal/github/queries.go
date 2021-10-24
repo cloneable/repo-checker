@@ -24,7 +24,7 @@ query OwnerRepos(
 	  # @genqlient(typename: OwnedRepo)
   	  node {
   		id
-  		nameWithOwner
+  		name
   		description
   		branchProtectionRules(first: 10) {
   		  nodes {
@@ -64,25 +64,48 @@ query OwnerRepos(
   		isPrivate
   		isTemplate
   		isSecurityPolicyEnabled
-  		labels(first: 20) {
-  		  nodes {
-  			id
-  			name
-  			description
-  			color
-  			isDefault
-  			pullRequests {
-  			  totalCount
-  			}
-  			issues {
-  			  totalCount
-  			}
-  		  }
-  		}
   	  }
   	}
     }
   }
 }`
 	return OwnerRepos(ctx, gh.gqlClient, login, repoCount, repoCursor)
+}
+
+func (gh *Client) RepoLabels(ctx context.Context, repoOwner, repoName string, labelCount int, labelCursor string) (*RepoLabelsResponse, error) {
+	_ = `# @genqlient
+		query RepoLabels(
+			$repoOwner: String!,
+			$repoName: String!,
+			$labelCount: Int!,
+			# @genqlient(omitempty: true)
+			$labelCursor: String) {
+			repository(owner: $repoOwner, name: $repoName) {
+			  labels(first: $labelCount, after: $labelCursor) {
+				pageInfo {
+				  endCursor
+				  hasNextPage
+				}
+				edges {
+				  cursor
+				  # @genqlient(typename: RepoLabel)
+				  node {
+					id
+					name
+					description
+					color
+					isDefault
+					pullRequests {
+					  totalCount
+					}
+					issues {
+					  totalCount
+					}
+				  }
+				}
+			  }
+			}
+		  }
+		  `
+	return RepoLabels(ctx, gh.gqlClient, repoOwner, repoName, labelCount, labelCursor)
 }

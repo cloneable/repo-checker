@@ -26,5 +26,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%+v\n", resp.RepositoryOwner)
+
+	// TODO: paginate
+	for _, edge := range resp.RepositoryOwner.GetRepositories().Edges {
+		repo := edge.Node
+		fmt.Printf("REPO%+v\n", repo)
+		resp, err := gh.RepoLabels(ctx, *owner, repo.Name, 10, "")
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, labelEdge := range resp.Repository.Labels.Edges {
+			label := labelEdge.Node
+			fmt.Printf("LABEL\t%+v\n", label)
+		}
+	}
 }
