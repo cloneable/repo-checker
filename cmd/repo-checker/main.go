@@ -39,7 +39,7 @@ func main() {
 	gql := graphql.NewClient("https://api.github.com/graphql", client)
 	gh := github.New(gql)
 
-	resp, err := gh.OwnerRepos(ctx, *owner)
+	resp, err := gh.OwnerRepos(ctx, *owner, 10, "")
 	if err != nil {
 		log.Fatal(err)
 	}
