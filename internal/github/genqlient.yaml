@@ -1,7 +1,7 @@
 # https://docs.github.com/public/schema.docs.graphql
 schema: schema.docs.graphql
 operations:
-  - github.go
+  - queries.go
 generated: generated.go
 package: github
 bindings:
