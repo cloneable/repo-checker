@@ -1,12 +1,6 @@
-GENQLIENT = $(shell go env GOPATH)/bin/genqlient
-
 .PHONY: generate
 generate:
-	$(GENQLIENT) ./genqlient.yaml
-
-.PHONY: install-tools
-install-tools:
-	go install github.com/Khan/genqlient@latest
+	go run github.com/Khan/genqlient ./genqlient.yaml
 
 .PHONY: download-schema
 download-schema:
