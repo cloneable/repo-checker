@@ -1,9 +1,0 @@
-# https://docs.github.com/public/schema.docs.graphql
-schema: schema.docs.graphql
-operations:
-  - queries.go
-generated: generated.go
-package: github
-bindings:
-  DateTime:
-    type: time.Time

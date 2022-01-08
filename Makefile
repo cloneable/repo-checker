@@ -2,7 +2,7 @@ GENQLIENT = $(shell go env GOPATH)/bin/genqlient
 
 .PHONY: generate
 generate:
-	$(GENQLIENT) internal/github/genqlient.yaml
+	$(GENQLIENT) ./genqlient.yaml
 
 .PHONY: install-tools
 install-tools:

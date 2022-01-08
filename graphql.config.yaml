@@ -1,0 +1,4 @@
+projects:
+  github:
+    schema: ./internal/api/schema.docs.graphql
+    documents: ./internal/api/queries.graphql
