@@ -1,8 +1,8 @@
 # https://docs.github.com/public/schema.docs.graphql
-schema: ./internal/api/schema.docs.graphql
+schema: ./internal/github/api/schema.docs.graphql
 operations:
-  - ./internal/api/queries.graphql
-generated: ./internal/api/api.go
+  - ./internal/github/api/queries.graphql
+generated: ./internal/github/api/api.go
 package: api
 bindings:
   DateTime:

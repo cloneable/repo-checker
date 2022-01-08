@@ -10,4 +10,4 @@ install-tools:
 
 .PHONY: download-schema
 download-schema:
-	curl --create-dirs --output internal/github/schema.docs.graphql https://docs.github.com/public/schema.docs.graphql
+	curl --create-dirs --output internal/github/api/schema.docs.graphql https://docs.github.com/public/schema.docs.graphql

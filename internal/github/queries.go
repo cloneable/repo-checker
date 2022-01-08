@@ -3,7 +3,7 @@ package github
 import (
 	"context"
 
-	"github.com/cloneable/repo-checker/internal/api"
+	"github.com/cloneable/repo-checker/internal/github/api"
 )
 
 func (gh *Client) OwnerRepos(ctx context.Context, login string, repoCount int, repoCursor string) (*api.OwnerReposResponse, error) {
