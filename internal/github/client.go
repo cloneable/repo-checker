@@ -9,8 +9,13 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
-// A generous default timeout.
-const defaultHTTPRequestTimeout = 5 * time.Second
+const (
+	// githubGraphQLEndpoint is the full URL of GitHub's GraphQL API endpoint.
+	githubGraphQLEndpoint = "https://api.github.com/graphql"
+
+	// defaultHTTPRequestTimeout defines a generous default timeout.
+	defaultHTTPRequestTimeout = 5 * time.Second
+)
 
 // ErrNoTokenSpecified is returned by New when no token was specified.
 var ErrNoTokenSpecified = errors.New("no token specified")
@@ -26,21 +31,22 @@ func New(personalAccessToken string) (*Client, error) {
 		return nil, ErrNoTokenSpecified
 	}
 	return &Client{
-		gqlClient: graphql.NewClient("https://api.github.com/graphql", &httpClient{
-			client: http.Client{
-				Timeout: defaultHTTPRequestTimeout,
+		gqlClient: graphql.NewClient(githubGraphQLEndpoint, &http.Client{
+			Timeout: defaultHTTPRequestTimeout,
+			Transport: &authTransport{
+				bearerToken: personalAccessToken,
+				wrapped:     http.DefaultTransport,
 			},
-			bearerToken: personalAccessToken,
 		}),
 	}, nil
 }
 
-type httpClient struct {
-	client      http.Client
+type authTransport struct {
+	wrapped     http.RoundTripper
 	bearerToken string
 }
 
-func (c *httpClient) Do(req *http.Request) (*http.Response, error) {
-	req.Header.Set("Authorization", "Bearer "+c.bearerToken)
-	return c.client.Do(req)
+func (t *authTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set("Authorization", "bearer "+t.bearerToken)
+	return t.wrapped.RoundTrip(req)
 }
