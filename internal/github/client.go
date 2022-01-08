@@ -34,3 +34,13 @@ func New(personalAccessToken string) (*Client, error) {
 		}),
 	}, nil
 }
+
+type httpClient struct {
+	client      http.Client
+	bearerToken string
+}
+
+func (c *httpClient) Do(req *http.Request) (*http.Response, error) {
+	req.Header.Set("Authorization", "Bearer "+c.bearerToken)
+	return c.client.Do(req)
+}
