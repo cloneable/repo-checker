@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/cloneable/repo-checker/internal/github"
 )
@@ -12,12 +13,16 @@ import (
 func main() {
 	ctx := context.Background()
 	var (
-		token = flag.String("token", "", "GitHub personal access token")
 		owner = flag.String("owner", "", "login of repository owner")
 	)
 	flag.Parse()
 
-	gh, err := github.New(*token)
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		log.Fatal("$GITHUB_TOKEN must be set to a PAT")
+	}
+
+	gh, err := github.New(token)
 	if err != nil {
 		log.Fatal(err)
 	}
